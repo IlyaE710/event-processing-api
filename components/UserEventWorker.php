@@ -26,6 +26,6 @@ class UserEventWorker
 
     protected function processEvent(array $eventData): void
     {
-        echo "Processing event: " . json_encode($eventData);
+//        echo "Processing event: " . json_encode($eventData);
     }
 }
