@@ -4,6 +4,7 @@ namespace app\commands;
 
 use app\components\events\factories\UserEventFactory;
 use app\components\events\UserEventPublisher;
+use app\components\loggers\FilerLogger;
 use app\components\processes\ForkedProcessManager;
 use app\components\queues\Queue;
 use yii\console\Controller;
@@ -25,13 +26,12 @@ class EventController extends Controller
 
     public function actionIndex(): void
     {
-        $userCount = 1000;
-        $eventCount = 1000;
+        $userCount = 10;
+        $eventCount = 10;
 
         $totalEvents = $userCount * $eventCount;
 
         $this->stdout("Start processing...\n");
-
         $processManager = new ForkedProcessManager($userCount, function (int $userId) use ($eventCount, $totalEvents) {
             $events = $this->userEventFactory->create($userId, $eventCount);
             $client = \Yii::createObject(Queue::class);

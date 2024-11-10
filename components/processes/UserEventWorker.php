@@ -3,13 +3,15 @@
 namespace app\components\processes;
 
 
+use app\components\loggers\Logger;
 use app\components\queues\Queue;
 
 class UserEventWorker
 {
     public function __construct(
         private Queue $client,
-        private readonly int $userId
+        private Logger $logger,
+        private readonly int $userId,
     ) {}
 
     public function run(): void
@@ -27,6 +29,6 @@ class UserEventWorker
 
     protected function processEvent(array $eventData): void
     {
-//        echo "Processing event: " . json_encode($eventData);
+        $this->logger->log($eventData);
     }
 }
