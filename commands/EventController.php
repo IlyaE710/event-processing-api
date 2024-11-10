@@ -2,10 +2,10 @@
 
 namespace app\commands;
 
-use app\components\factories\UserEventFactory;
-use app\components\ForkedProcessManager;
-use app\components\Queue;
-use app\components\UserEventPublisher;
+use app\components\events\factories\UserEventFactory;
+use app\components\events\UserEventPublisher;
+use app\components\processes\ForkedProcessManager;
+use app\components\queues\Queue;
 use yii\console\Controller;
 
 class EventController extends Controller

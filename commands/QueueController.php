@@ -2,9 +2,9 @@
 
 namespace app\commands;
 
-use app\components\ForkedProcessManager;
-use app\components\Queue;
-use app\components\UserEventWorker;
+use app\components\processes\ForkedProcessManager;
+use app\components\processes\UserEventWorker;
+use app\components\queues\Queue;
 use yii\console\Controller;
 
 class QueueController extends Controller

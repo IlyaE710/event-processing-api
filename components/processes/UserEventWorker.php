@@ -1,7 +1,9 @@
 <?php
 
-namespace app\components;
+namespace app\components\processes;
 
+
+use app\components\queues\Queue;
 
 class UserEventWorker
 {

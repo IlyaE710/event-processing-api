@@ -1,8 +1,8 @@
 <?php
 
-namespace app\components;
+namespace app\components\events;
 
-use Redis;
+use app\components\queues\Queue;
 
 class UserEventPublisher
 {

@@ -1,6 +1,6 @@
 <?php
 
-namespace app\components;
+namespace app\components\processes;
 
 use yii\base\InvalidConfigException;
 
@@ -25,7 +25,7 @@ class ForkedProcessManager implements ProcessManager
             }
 
             if ($pid == 0) {
-                call_user_func($this->handleUserEventCallback, $userId); // Вызываем callback
+                call_user_func($this->handleUserEventCallback, $userId);
                 exit(0);
             }
         }
