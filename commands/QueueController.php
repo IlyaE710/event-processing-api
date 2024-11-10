@@ -2,9 +2,9 @@
 
 namespace app\commands;
 
+use app\components\ForkedProcessManager;
 use app\components\Queue;
 use app\components\UserEventWorker;
-use yii\base\InvalidConfigException;
 use yii\console\Controller;
 
 class QueueController extends Controller
@@ -12,24 +12,14 @@ class QueueController extends Controller
     public function actionRun(): void
     {
         $userCount = 1000;
-        for ($userId = 1; $userId <= $userCount; $userId++) {
-            $pid = pcntl_fork();
 
-            if ($pid == -1) {
-                throw new InvalidConfigException("Unable to fork process.");
-            }
+        $processManager = new ForkedProcessManager($userCount, static function (int $userId) {
+            $client = \Yii::createObject(Queue::class);
+            $userEventWorker = new UserEventWorker($client, $userId);
+            $userEventWorker->run();
+        });
 
-            if ($pid == 0) {
-                $client = \Yii::createObject(Queue::class);
-                $userEventWorker = new UserEventWorker($client, $userId);
-                $userEventWorker->run();
-                exit(0);
-            }
-        }
-
-        for ($userId = 0; $userId < $userCount; $userId++) {
-            pcntl_wait($status);
-        }
+        $processManager->run();
 
         $this->stdout("\nProcessing completed.\n");
     }
