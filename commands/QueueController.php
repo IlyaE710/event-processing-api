@@ -29,6 +29,7 @@ class QueueController extends Controller
         $userCount = (int) \Yii::$app->params['userCount'];
         $logger = $this->logger;
         $this->stdout("Start processing...\n");
+        // todo добавить mutex по userId для очередей
         $processManager = new ForkedProcessManager(
             $userCount,
             static function (int $userId) use (&$logger): void {
