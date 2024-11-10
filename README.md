@@ -32,7 +32,7 @@ API принимает события (до 10,000) для группы акка
 2. **Установка зависимостей**:
 
     ```bash
-    composer install
+    docker-compose exec php-cli composer install
     ```
 3. **Копирование конфигурации**:
 
