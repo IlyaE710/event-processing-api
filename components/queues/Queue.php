@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace app\components\queues;
 
 interface Queue
@@ -12,5 +14,5 @@ interface Queue
     /**
      * Получить элемент из очереди.
      */
-    public function pop(string $queueName): ?string;
+    public function pop(string $queueName): mixed;
 }

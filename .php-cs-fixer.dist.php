@@ -27,6 +27,7 @@ return (new Config())
         'modernize_strpos' => true, // needs PHP 8+ or polyfill
         'no_useless_concat_operator' => false, // TODO switch back on when the `src/Console/Application.php` no longer needs the concat
         'numeric_literal_separator' => true,
+        'yoda_style' => false,
     ])
     ->setFinder(
         (new Finder())
@@ -37,4 +38,4 @@ return (new Config())
             ->append([__DIR__.'/commands'])
             ->append([__DIR__.'/components'])
     )
-    ;
+;

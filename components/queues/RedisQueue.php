@@ -1,7 +1,8 @@
 <?php
 
-namespace app\components\queues;
+declare(strict_types=1);
 
+namespace app\components\queues;
 
 class RedisQueue implements Queue
 {
@@ -21,7 +22,7 @@ class RedisQueue implements Queue
     /**
      * Получить элемент из очереди.
      */
-    public function pop(string $queueName): ?string
+    public function pop(string $queueName): mixed
     {
         return $this->redis->lpop($queueName);
     }

@@ -1,14 +1,14 @@
 <?php
 
-namespace app\components\events\factories;
+declare(strict_types=1);
 
-use Generator;
+namespace app\components\events\factories;
 
 class UserEventFactory
 {
-    public function create(string $userId, int $eventCount): Generator
+    public function create(int $userId, int $eventCount): \Generator
     {
-        for ($eventId = 1; $eventId <= $eventCount; $eventId++) {
+        for ($eventId = 1; $eventId <= $eventCount; ++$eventId) {
             yield [
                 'accountId' => $userId,
                 'eventId' => $eventId,

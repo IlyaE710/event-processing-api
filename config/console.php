@@ -1,6 +1,7 @@
 <?php
 
-use app\components\events\factories\UserEventFactory;
+declare(strict_types=1);
+
 use app\components\events\UserEventPublisher;
 use app\components\loggers\FilerLogger;
 use app\components\loggers\Logger;
@@ -8,7 +9,7 @@ use app\components\loggers\NullableLogger;
 use app\components\queues\Queue;
 use app\components\queues\RedisQueue;
 
-$params = require __DIR__ . '/params.php';
+$params = require __DIR__.'/params.php';
 
 $config = [
     'id' => 'event-console',
@@ -17,7 +18,7 @@ $config = [
     'controllerNamespace' => 'app\commands',
     'aliases' => [
         '@bower' => '@vendor/bower-asset',
-        '@npm'   => '@vendor/npm-asset',
+        '@npm' => '@vendor/npm-asset',
         '@tests' => '@app/tests',
     ],
     'container' => [
@@ -26,16 +27,13 @@ $config = [
                 $client = new Redis();
                 $client->connect(
                     env('REDIS_HOST', 'redis'),
-                    (int)env('REDIS_PORT', '6379')
+                    (int) env('REDIS_PORT', '6379')
                 );
+
                 return new RedisQueue($client);
             },
-            Logger::class => static function () {
-                return YII_DEBUG ? new FilerLogger() : new NullableLogger();
-            },
-            UserEventPublisher::class => static function ($container) {
-                return new UserEventPublisher($container->get(Queue::class));
-            },
+            Logger::class => static fn () => YII_DEBUG ? new FilerLogger() : new NullableLogger(),
+            UserEventPublisher::class => static fn ($container) => new UserEventPublisher($container->get(Queue::class)),
         ],
     ],
     'components' => [

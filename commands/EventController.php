@@ -1,11 +1,12 @@
 <?php
 
+declare(strict_types=1);
+
 namespace app\commands;
 
 use app\components\events\factories\UserEventFactory;
 use app\components\events\UserEventPublisher;
 use app\components\processes\ForkedProcessManager;
-use Yii;
 use yii\base\InvalidConfigException;
 use yii\console\Controller;
 
@@ -18,8 +19,7 @@ class EventController extends Controller
         $module,
         UserEventFactory $userEventFactory,
         $config = []
-    )
-    {
+    ) {
         $this->userEventFactory = $userEventFactory;
         parent::__construct($id, $module, $config);
     }
@@ -29,14 +29,15 @@ class EventController extends Controller
      */
     public function actionIndex(): void
     {
-        $userCount = Yii::$app->params['userCount'];
-        $eventCount = Yii::$app->params['eventCount'];
+        $userCount = (int) \Yii::$app->params['userCount'];
+        $eventCount = (int) \Yii::$app->params['eventCount'];
 
         $userEventFactory = $this->userEventFactory;
         $this->stdout("Start processing...\n");
-        $processManager = new ForkedProcessManager($userCount, function (int $userId) use (&$userEventFactory, &$eventCount) {
+        $processManager = new ForkedProcessManager($userCount, static function (int $userId) use (&$userEventFactory, &$eventCount): void {
             $events = $userEventFactory->create($userId, $eventCount);
-            $userEventPublisher = Yii::createObject(UserEventPublisher::class);
+            /** @var UserEventPublisher $userEventPublisher */
+            $userEventPublisher = \Yii::createObject(UserEventPublisher::class);
             foreach ($events as $event) {
                 $userEventPublisher->publish($userId, $event);
             }

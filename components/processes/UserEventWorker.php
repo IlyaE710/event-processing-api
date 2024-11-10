@@ -1,9 +1,9 @@
 <?php
 
+declare(strict_types=1);
+
 namespace app\components\processes;
 
-
-use app\components\loggers\Logger;
 use app\components\queues\Queue;
 
 class UserEventWorker
@@ -21,12 +21,13 @@ class UserEventWorker
     public function run(): void
     {
         while (true) {
-            $event = $this->client->pop('user_events_' . $this->userId);
+            $event = $this->client->pop('user_events_'.$this->userId);
             if ($event) {
                 $eventData = json_decode($event, true);
-                call_user_func($this->eventProcessor, $eventData);
+                \call_user_func($this->eventProcessor, $eventData);
             } else {
                 sleep(1);
+
                 break;
             }
         }

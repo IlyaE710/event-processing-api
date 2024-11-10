@@ -1,12 +1,13 @@
 <?php
 
+declare(strict_types=1);
+
 namespace app\commands;
 
 use app\components\loggers\Logger;
 use app\components\processes\ForkedProcessManager;
 use app\components\processes\UserEventWorker;
 use app\components\queues\Queue;
-use Yii;
 use yii\base\InvalidConfigException;
 use yii\console\Controller;
 
@@ -25,20 +26,24 @@ class QueueController extends Controller
      */
     public function actionRun(): void
     {
-        $userCount = Yii::$app->params['userCount'];
+        $userCount = (int) \Yii::$app->params['userCount'];
         $logger = $this->logger;
         $this->stdout("Start processing...\n");
         $processManager = new ForkedProcessManager(
             $userCount,
-            static function (int $userId) use (&$logger) {
+            static function (int $userId) use (&$logger): void {
+                /** @var Queue $queue */
+                $queue = \Yii::createObject(Queue::class);
                 $userEventWorker = new UserEventWorker(
-                    Yii::createObject(Queue::class),
+                    $queue,
                     $userId,
-                    static function (array $eventData) use (&$logger) {
+                    static function (array $eventData) use (&$logger): void {
                         $logger->log($eventData);
-                    });
-            $userEventWorker->run();
-        });
+                    }
+                );
+                $userEventWorker->run();
+            }
+        );
 
         $processManager->run();
 
