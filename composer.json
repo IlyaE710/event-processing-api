@@ -17,7 +17,9 @@
         "php": ">=8.2.0",
         "yiisoft/yii2": "~2.0.45",
         "yiithings/yii2-dotenv": "*",
-        "predis/predis": "^2.2"
+        "predis/predis": "^2.2",
+        "ext-pcntl": "*",
+        "ext-redis": "*"
     },
     "repositories": [
         {
