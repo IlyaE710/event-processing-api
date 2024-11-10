@@ -39,6 +39,7 @@ class QueueController extends Controller
                     $userId,
                     static function (array $eventData) use (&$logger): void {
                         $logger->log($eventData);
+                        sleep(1);
                     }
                 );
                 $userEventWorker->run();
