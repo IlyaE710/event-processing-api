@@ -7,6 +7,7 @@ use app\components\events\UserEventPublisher;
 use app\components\loggers\FilerLogger;
 use app\components\processes\ForkedProcessManager;
 use app\components\queues\Queue;
+use Yii;
 use yii\console\Controller;
 
 class EventController extends Controller
@@ -26,15 +27,15 @@ class EventController extends Controller
 
     public function actionIndex(): void
     {
-        $userCount = 10;
-        $eventCount = 10;
+        $userCount = Yii::$app->params['userCount'];
+        $eventCount = Yii::$app->params['eventCount'];
 
         $totalEvents = $userCount * $eventCount;
 
         $this->stdout("Start processing...\n");
         $processManager = new ForkedProcessManager($userCount, function (int $userId) use ($eventCount, $totalEvents) {
             $events = $this->userEventFactory->create($userId, $eventCount);
-            $client = \Yii::createObject(Queue::class);
+            $client = Yii::createObject(Queue::class);
             $userEventPublisher = new UserEventPublisher($client);
             foreach ($events as $index => $event) {
                 $userEventPublisher->publish($userId, $event);

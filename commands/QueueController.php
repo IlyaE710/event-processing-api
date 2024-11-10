@@ -7,17 +7,18 @@ use app\components\loggers\NullableLogger;
 use app\components\processes\ForkedProcessManager;
 use app\components\processes\UserEventWorker;
 use app\components\queues\Queue;
+use Yii;
 use yii\console\Controller;
 
 class QueueController extends Controller
 {
     public function actionRun(): void
     {
-        $userCount = 1000;
+        $userCount = Yii::$app->params['userCount'];
         $logger = new FilerLogger();
 
         $processManager = new ForkedProcessManager($userCount, static function (int $userId) use (&$logger) {
-            $client = \Yii::createObject(Queue::class);
+            $client = Yii::createObject(Queue::class);
             $userEventWorker = new UserEventWorker($client, $logger, $userId);
             $userEventWorker->run();
         });
