@@ -29,21 +29,17 @@ class EventController extends Controller
         $userCount = Yii::$app->params['userCount'];
         $eventCount = Yii::$app->params['eventCount'];
 
-        $totalEvents = $userCount * $eventCount;
-
+        $userEventFactory = $this->userEventFactory;
         $this->stdout("Start processing...\n");
-        $processManager = new ForkedProcessManager($userCount, function (int $userId) use ($eventCount, $totalEvents) {
-            $events = $this->userEventFactory->create($userId, $eventCount);
+        $processManager = new ForkedProcessManager($userCount, function (int $userId) use (&$userEventFactory, &$eventCount) {
+            $events = $userEventFactory->create($userId, $eventCount);
             $client = Yii::createObject(Queue::class);
             $userEventPublisher = new UserEventPublisher($client);
-            foreach ($events as $index => $event) {
+            foreach ($events as $event) {
                 $userEventPublisher->publish($userId, $event);
-
-                $currentProgress = (($userId - 1) * $eventCount + ($index + 1)) / $totalEvents * 100;
-                $this->stdout(sprintf("\rProgress: %.2f%%", $currentProgress));
             }
         });
-
         $processManager->run();
+        $this->stdout("\nProcessing completed.\n");
     }
 }
