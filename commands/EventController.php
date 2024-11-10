@@ -33,8 +33,7 @@ class EventController extends Controller
         $this->stdout("Start processing...\n");
         $processManager = new ForkedProcessManager($userCount, function (int $userId) use (&$userEventFactory, &$eventCount) {
             $events = $userEventFactory->create($userId, $eventCount);
-            $client = Yii::createObject(Queue::class);
-            $userEventPublisher = new UserEventPublisher($client);
+            $userEventPublisher = Yii::createObject(UserEventPublisher::class);
             foreach ($events as $event) {
                 $userEventPublisher->publish($userId, $event);
             }

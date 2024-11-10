@@ -1,5 +1,7 @@
 <?php
 
+use app\components\events\factories\UserEventFactory;
+use app\components\events\UserEventPublisher;
 use app\components\loggers\FilerLogger;
 use app\components\loggers\Logger;
 use app\components\loggers\NullableLogger;
@@ -30,6 +32,9 @@ $config = [
             },
             Logger::class => static function () {
                 return YII_DEBUG ? new FilerLogger() : new NullableLogger();
+            },
+            UserEventPublisher::class => static function ($container) {
+                return new UserEventPublisher($container->get(Queue::class));
             },
         ],
     ],
