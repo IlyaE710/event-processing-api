@@ -1,5 +1,6 @@
 <?php
 
+use app\components\RedisQueue;
 use app\components\UserEventPublisher;
 
 $params = require __DIR__ . '/params.php';
@@ -16,10 +17,10 @@ $config = [
     ],
     'container' => [
         'definitions' => [
-            UserEventPublisher::class => static function () {
+            \app\components\Queue::class => static function () {
                 $client = new Redis();
                 $client->connect('redis');
-                return new UserEventPublisher($client);
+                return new RedisQueue($client);
             }
         ],
     ],

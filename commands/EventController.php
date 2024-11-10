@@ -3,6 +3,7 @@
 namespace app\commands;
 
 use app\components\factories\UserEventFactory;
+use app\components\Queue;
 use app\components\UserEventPublisher;
 use Redis;
 use yii\console\Controller;
@@ -39,8 +40,7 @@ class EventController extends Controller
                 continue;
             } elseif ($pid == 0) {
                 $events = $this->userEventFactory->create($userId, $eventCount);
-                $client = new Redis();
-                $client->connect('redis', 6379);
+                $client = \Yii::createObject(Queue::class);
                 $userEventPublisher = new UserEventPublisher($client);
                 foreach ($events as $index => $event) {
                     $userEventPublisher->publish($userId, $event);

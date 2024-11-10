@@ -2,8 +2,8 @@
 
 namespace app\commands;
 
+use app\components\Queue;
 use app\components\UserEventWorker;
-use Redis;
 use yii\base\InvalidConfigException;
 use yii\console\Controller;
 
@@ -20,8 +20,7 @@ class QueueController extends Controller
             }
 
             if ($pid == 0) {
-                $client = new Redis();
-                $client->connect('redis', 6379);
+                $client = \Yii::createObject(Queue::class);
                 $userEventWorker = new UserEventWorker($client, $userId);
                 $userEventWorker->run();
                 exit(0);

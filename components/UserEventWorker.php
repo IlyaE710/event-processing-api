@@ -2,19 +2,18 @@
 
 namespace app\components;
 
-use Redis;
 
 class UserEventWorker
 {
     public function __construct(
-        private Redis $client,
+        private Queue $client,
         private readonly int $userId
     ) {}
 
     public function run(): void
     {
         while (true) {
-            $event = $this->client->lpop('user_events_' . $this->userId);
+            $event = $this->client->pop('user_events_' . $this->userId);
             if ($event) {
                 $eventData = json_decode($event, true);
                 $this->processEvent($eventData);
