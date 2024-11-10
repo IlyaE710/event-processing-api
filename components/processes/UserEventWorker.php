@@ -8,11 +8,15 @@ use app\components\queues\Queue;
 
 class UserEventWorker
 {
+    private mixed $eventProcessor;
+
     public function __construct(
         private Queue $client,
-        private Logger $logger,
         private readonly int $userId,
-    ) {}
+        $eventProcessor
+    ) {
+        $this->eventProcessor = $eventProcessor;
+    }
 
     public function run(): void
     {
@@ -20,16 +24,11 @@ class UserEventWorker
             $event = $this->client->pop('user_events_' . $this->userId);
             if ($event) {
                 $eventData = json_decode($event, true);
-                $this->processEvent($eventData);
+                call_user_func($this->eventProcessor, $eventData);
             } else {
                 sleep(1);
                 break;
             }
         }
-    }
-
-    protected function processEvent(array $eventData): void
-    {
-        $this->logger->log($eventData);
     }
 }

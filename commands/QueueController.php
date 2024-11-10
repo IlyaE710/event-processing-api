@@ -24,9 +24,16 @@ class QueueController extends Controller
         $userCount = Yii::$app->params['userCount'];
         $logger = $this->logger;
         $this->stdout("Start processing...\n");
-        $processManager = new ForkedProcessManager($userCount, static function (int $userId) use (&$logger) {
-            $client = Yii::createObject(Queue::class);
-            $userEventWorker = new UserEventWorker($client, $logger, $userId);
+        $processManager = new ForkedProcessManager(
+            $userCount,
+            static function (int $userId) use (&$logger) {
+                $client = Yii::createObject(Queue::class);
+                $userEventWorker = new UserEventWorker(
+                    $client,
+                    $userId,
+                    static function (array $eventData) use (&$logger) {
+                        $logger->log($eventData);
+                    });
             $userEventWorker->run();
         });
 
