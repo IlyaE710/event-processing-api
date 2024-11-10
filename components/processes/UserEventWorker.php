@@ -23,6 +23,7 @@ class UserEventWorker
                 $this->processEvent($eventData);
             } else {
                 sleep(1);
+                break;
             }
         }
     }
