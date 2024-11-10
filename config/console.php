@@ -1,5 +1,7 @@
 <?php
 
+use app\components\UserEventPublisher;
+
 $params = require __DIR__ . '/params.php';
 
 $config = [
@@ -11,6 +13,15 @@ $config = [
         '@bower' => '@vendor/bower-asset',
         '@npm'   => '@vendor/npm-asset',
         '@tests' => '@app/tests',
+    ],
+    'container' => [
+        'definitions' => [
+            UserEventPublisher::class => static function () {
+                $client = new Redis();
+                $client->connect('redis');
+                return new UserEventPublisher($client);
+            }
+        ],
     ],
     'components' => [
         'cache' => [
