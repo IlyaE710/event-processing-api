@@ -1,5 +1,8 @@
 <?php
 
+use app\components\loggers\FilerLogger;
+use app\components\loggers\Logger;
+use app\components\loggers\NullableLogger;
 use app\components\queues\Queue;
 use app\components\queues\RedisQueue;
 
@@ -24,7 +27,10 @@ $config = [
                     (int)env('REDIS_PORT', '6379')
                 );
                 return new RedisQueue($client);
-            }
+            },
+            Logger::class => static function () {
+                return YII_DEBUG ? new FilerLogger() : new NullableLogger();
+            },
         ],
     ],
     'components' => [

@@ -4,7 +4,6 @@ namespace app\commands;
 
 use app\components\events\factories\UserEventFactory;
 use app\components\events\UserEventPublisher;
-use app\components\loggers\FilerLogger;
 use app\components\processes\ForkedProcessManager;
 use app\components\queues\Queue;
 use Yii;
