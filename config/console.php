@@ -1,5 +1,6 @@
 <?php
 
+use app\components\queues\Queue;
 use app\components\queues\RedisQueue;
 
 $params = require __DIR__ . '/params.php';
@@ -16,9 +17,12 @@ $config = [
     ],
     'container' => [
         'definitions' => [
-            \app\components\queues\Queue::class => static function () {
+            Queue::class => static function () {
                 $client = new Redis();
-                $client->connect('redis');
+                $client->connect(
+                    env('REDIS_HOST', 'redis'),
+                    (int)env('REDIS_PORT', '6379')
+                );
                 return new RedisQueue($client);
             }
         ],

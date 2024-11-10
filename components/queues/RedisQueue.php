@@ -7,7 +7,7 @@ class RedisQueue implements Queue
 {
     public function __construct(private readonly \Redis $redis)
     {
-        $this->redis->connect('redis');
+        register_shutdown_function([$this, 'shutdown']);
     }
 
     /**
@@ -24,5 +24,12 @@ class RedisQueue implements Queue
     public function pop(string $queueName): ?string
     {
         return $this->redis->lpop($queueName);
+    }
+
+    private function shutdown(): void
+    {
+        if ($this->redis->isConnected()) {
+            $this->redis->close();
+        }
     }
 }
