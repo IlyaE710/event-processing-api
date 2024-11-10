@@ -5,8 +5,8 @@ namespace app\commands;
 use app\components\events\factories\UserEventFactory;
 use app\components\events\UserEventPublisher;
 use app\components\processes\ForkedProcessManager;
-use app\components\queues\Queue;
 use Yii;
+use yii\base\InvalidConfigException;
 use yii\console\Controller;
 
 class EventController extends Controller
@@ -24,6 +24,9 @@ class EventController extends Controller
         parent::__construct($id, $module, $config);
     }
 
+    /**
+     * @throws InvalidConfigException
+     */
     public function actionIndex(): void
     {
         $userCount = Yii::$app->params['userCount'];

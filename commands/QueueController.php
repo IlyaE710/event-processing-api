@@ -7,6 +7,7 @@ use app\components\processes\ForkedProcessManager;
 use app\components\processes\UserEventWorker;
 use app\components\queues\Queue;
 use Yii;
+use yii\base\InvalidConfigException;
 use yii\console\Controller;
 
 class QueueController extends Controller
@@ -19,6 +20,9 @@ class QueueController extends Controller
         parent::__construct($id, $module, $config);
     }
 
+    /**
+     * @throws InvalidConfigException
+     */
     public function actionRun(): void
     {
         $userCount = Yii::$app->params['userCount'];
@@ -27,9 +31,8 @@ class QueueController extends Controller
         $processManager = new ForkedProcessManager(
             $userCount,
             static function (int $userId) use (&$logger) {
-                $client = Yii::createObject(Queue::class);
                 $userEventWorker = new UserEventWorker(
-                    $client,
+                    Yii::createObject(Queue::class),
                     $userId,
                     static function (array $eventData) use (&$logger) {
                         $logger->log($eventData);
