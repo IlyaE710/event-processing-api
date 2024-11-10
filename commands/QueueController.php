@@ -2,9 +2,7 @@
 
 namespace app\commands;
 
-use app\components\loggers\FilerLogger;
 use app\components\loggers\Logger;
-use app\components\loggers\NullableLogger;
 use app\components\processes\ForkedProcessManager;
 use app\components\processes\UserEventWorker;
 use app\components\queues\Queue;
@@ -25,7 +23,7 @@ class QueueController extends Controller
     {
         $userCount = Yii::$app->params['userCount'];
         $logger = $this->logger;
-
+        $this->stdout("Start processing...\n");
         $processManager = new ForkedProcessManager($userCount, static function (int $userId) use (&$logger) {
             $client = Yii::createObject(Queue::class);
             $userEventWorker = new UserEventWorker($client, $logger, $userId);
